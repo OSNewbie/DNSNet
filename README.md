@@ -2,12 +2,8 @@
   <img src="assets/feature-graphic.png" alt="DNSNet feature graphic" width="50%"/>
 </div>
 
-Based on DNS66, DNSNet aims to continue the goals of the original
-app with modern Android development practices.
-
-This is a DNS-based host blocker for Android. In the default configuration,
-several widely-respected host files are used to block ads, malware, and other
-weird stuff.
+基于 DNS66，DNSNet 在现代 Android 开发下延续原应用：  
+一个本地 DNS 屏蔽器，默认使用多份可信 hosts 文件拦截广告、恶意软件等。
 
 <div align="center">
 <a href="https://hosted.weblate.org/engage/dnsnet/">
@@ -15,15 +11,19 @@ weird stuff.
 </a>
 </div>
 
-Screenshots
+屏幕截图
 -----------
 
 <div align="center">
-<img src="metadata/en-US/images/phoneScreenshots/start-p9p.png" width="20%" /> <img src="metadata/en-US/images/phoneScreenshots/hosts-p9p.png" width="20%" /> <img src="metadata/en-US/images/phoneScreenshots/apps-p9p.png" width="20%" /> <img src="metadata/en-US/images/phoneScreenshots/dns-p9p.png" width="20%" />
+<img src="metadata/en-US/images/phoneScreenshots/start-p9p.png" width="20%" /> 
+<img src="metadata/en-US/images/phoneScreenshots/hosts-p9p.png" width="20%" /> 
+<img src="metadata/en-US/images/phoneScreenshots/apps-p9p.png" width="20%" /> 
+<img src="metadata/en-US/images/phoneScreenshots/dns-p9p.png" width="20%" />
 </div>
 
-Installing
+安装方式
 ----------
+
 <div align="center">
 <a href="https://f-droid.org/packages/dev.clombardo.dnsnet/">
 <img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" alt="Get it on F-Droid" height="80">
@@ -36,96 +36,48 @@ Installing
 </a>
 </div>
 
-Or download the latest APK from the [Releases Section](https://github.com/t895/DNSNet/releases/latest).
+或从 [Releases](https://github.com/t895/DNSNet/releases/latest) 下载 APK。
 
-How it works
+工作原理
 ------------
-The app establishes a "VPN (Virtual Private Network) service." Traditionally, these are intended to
-send internet traffic from your device to a remote server with the intent of anonymizing the source
-of your requests. In the case of DNSNet, this is not the case.
 
-DNSNet uses Android's "VPN service" API as a way to read and filter your internet traffic entirely
-on-device. It starts by getting access to a "tunnel" that provides your network requests. Then, it
-reads the hostname (e.g. google.com) of each DNS request. Finally, it blocks or allows each request
-based on the configuration as seen in the "Filters" screen of the app.
+利用 Android VPN 服务 API，本地拦截所有 DNS 请求，按“过滤器”设置放行或阻止。  
+缺点：  
+- 持续运行会消耗一定电量；  
+- 仅能与系统中唯一的 VPN 服务共存。
 
-It's important to note that this approach is not perfect and has some notable downsides:
-* While this app has been tuned to be as efficient as possible, it is still a service that must run
-constantly and will have some battery cost over alternate methods of blocking through services like
-AdAway with root, Rethink, and others.
-* Since this runs as a "VPN service," you will be unable to run another "VPN service" alongside it
-since Android only allows for one at a time.
+更多详情见 [FAQ](https://github.com/t895/DNSNet/wiki/FAQ)。
 
-For further information, see the [FAQ](https://github.com/t895/DNSNet/wiki/FAQ).
-
-Privacy Guarantee
+隐私保障
 -----------------
-Privacy is the most important aspect of DNSNet. Currently, DNSNet is strictly
-data reducing: Running it can only reduce the amount of data leaving your
-device, not increase it (except for fetching hosts files, obviously), as for
-each request, we will either allow it to leave your device or not - we will
-not send other requests or add other information to the request.
 
-Contributing
+DNSNet 只减少出站数据：除了下载 hosts 文件外，不会发送额外流量，也不添加请求信息。
+
+参与贡献
 ------------
-See [CONTRIBUTING.md](CONTRIBUTING.md)
 
-Building
+详见 [CONTRIBUTING.md](CONTRIBUTING.md)
+
+编译说明
 --------
-You'll need a few things installed to get up and running
-- [Rust](https://www.rust-lang.org/tools/install)
-- [Python 3](https://www.python.org/downloads/)
-- Java 17+
-- [Android Studio](https://developer.android.com/studio) (Optionally)
 
-Building on Windows is currently broken due to issues with compiling quiche, the crate I use for making HTTP/3 requests.
-Here's the related issue - https://github.com/cloudflare/quiche/issues/2020
+前置工具：Rust、Python 3、Java 17+（可选 Android Studio）  
+需添加 Android NDK 环境变量并安装 cmake、make。  
+Windows 构建因 quiche 库问题暂不可用；macOS Android Studio 可能识别不到 Rust，请使用命令行或 `open -na "Android Studio.app"` 启动。
 
-Add all of the Rust build targets
-```bash
-rustup target add x86_64-linux-android aarch64-linux-android armv7-linux-androideabi
-```
-
-Add a `ANDROID_NDK_HOME` environment variable that points to `.../<Current NDK version>`
-
-Android Studio *will* be picky about where you declare the variable. On Ubuntu I added it to my
-`/etc/environment` file and on macOS I added it to my `~/.zprofile` file.
-
-Install `cmake` and `make`
-
-Then run this in the root of the project to build the app
-```bash
-./gradlew assembleDebug
-```
-
-Note - Android Studio Ladybug on macOS has an issue where it won't be able to find "rustc" and "cargo" when building.
-You'll need to build via the command line in order for things to work properly.
-
-https://issuetracker.google.com/issues/377339196?pli=1
-
-Alternatively, you can launch Android Studio with this command to workaround the issue.
-```bash
-open -na "Android Studio.app"
-```
-
-License
+许可证
 -------
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the [License](COPYING), or
-(at your option) any later version.
 
-Code of Conduct
+本程序遵循 GNU GPL v3（或更高版本）。详见 [COPYING](COPYING)
+
+行为准则
 ---------------
-Please note that this project is released with a Contributor Code of
-Conduct. By participating in this project you agree to abide by its terms.
 
-See [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
+详见 [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
 
-Authors
+作者
 -------
-Charles Lombardo <clombardo169@gmail.com>
 
-The app is based on the UI and services created by Julian Andres Klode <jak@jak-linux.org>
-
-Parts are derived from https://github.com/dbrodie/AdBuster by Daniel Brodie.
+Charles Lombardo <clombardo169@gmail.com>  
+界面服务由 Julian Andres Klode <jak@jak-linux.org> 提供  
+部分代码源自 Daniel Brodie 的 AdBuster（https://github.com/dbrodie/AdBuster）
